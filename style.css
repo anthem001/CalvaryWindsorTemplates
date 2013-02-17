@@ -29,7 +29,7 @@ div.sermon-browser table.sermons {
 #content div.sermon-browser table.sermons td.sermon-title {
 	font-weight:bold;
 	font-size: 140%;
-	padding-top: 2em;
+	padding-top: 0em;
 }
 
 div.sermon-browser table.sermons td.sermon-passage {
