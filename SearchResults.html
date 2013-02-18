@@ -6,13 +6,14 @@
 	<table class="sermons">
 	[sermons_loop]
 		<tr>
-			<td class="embed">[embed_loop][embed][/embed_loop]</td><td class="sermon-title">[sermon_title]</td>
+			<td class="sermon-title">[sermon_title]</td><td class="files">[files_loop][file][/files_loop]</td>
 		</tr>
 		<tr>
-			<td class="preacher">Preached by [preacher_link] on [date] ([service_link]). [editlink]</td>
+			<td class="preacher" colspan="2">[first_passage], by [preacher_link] , [date]. ([service_link]) [editlink]</td>
 		</tr>
 		<tr>
-			<td class="files">[files_loop][file][/files_loop]</td>
+			<td class="embed" colspan="2">[embed_loop][embed][/embed_loop]</td>
+			
 		</tr>	
    	[/sermons_loop]
 	</table>
