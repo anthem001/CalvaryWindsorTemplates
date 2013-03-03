@@ -49,12 +49,13 @@ div.sermon-browser table.sermons td.files img {
 
 table.sermonbrowser td.fieldname {
 	font-weight:bold;
-	padding-right: 10px;
-	vertical-align:bottom;
+	padding-left: 10px !important;
 }
 
 table.sermonbrowser td.field input, table.sermonbrowser td.field select{
 	width: 170px;
+        font-weight:900;
+        color:black;
 }
 
 table.sermonbrowser td.field  #date, table.sermonbrowser td.field #enddate {
