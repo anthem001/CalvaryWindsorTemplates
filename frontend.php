@@ -972,13 +972,13 @@ function sb_print_filters($filter) {
 	} elseif ($filter['filter'] == 'dropdown') {
 		// Drop-down filter
 		$preachers = $wpdb->get_results("SELECT p.*, count(p.id) AS count FROM {$wpdb->prefix}sb_preachers AS p JOIN {$wpdb->prefix}sb_sermons AS s ON p.id = s.preacher_id GROUP BY p.id ORDER BY count DESC, s.datetime DESC");
-		//$series = $wpdb->get_results("SELECT ss.*, count(ss.id) AS count FROM {$wpdb->prefix}sb_series AS ss JOIN {$wpdb->prefix}sb_sermons AS sermons ON ss.id = sermons.series_id GROUP BY ss.id ORDER BY sermons.datetime DESC");
-		$series = $wpdb->get_results("SELECT ss.*, count(ss.id) AS count 
-			FROM {$wpdb->prefix}sb_series AS ss 
-			JOIN {$wpdb->prefix}sb_sermons AS sermons ON ss.id = sermons.series_id 
-			JOIN {$wpdb->prefix}sb_books_sermons ON sermons.id = {$wpdb->prefix}sb_books_sermons.sermon_id
-			JOIN {$wpdb->prefix}sb_books ON {$wpdb->prefix}sb_books_sermons.book_name = {$wpdb->prefix}sb_books.name
-			GROUP BY ss.id ORDER BY {$wpdb->prefix}sb_books.id");
+		$series = $wpdb->get_results("SELECT ss.*, count(ss.id) AS count FROM {$wpdb->prefix}sb_series AS ss JOIN {$wpdb->prefix}sb_sermons AS sermons ON ss.id = sermons.series_id GROUP BY ss.id ORDER BY sermons.datetime DESC");
+		//$series = $wpdb->get_results("SELECT ss.*, count(ss.id) AS count 
+		//	FROM {$wpdb->prefix}sb_series AS ss 
+		//	JOIN {$wpdb->prefix}sb_sermons AS sermons ON ss.id = sermons.series_id 
+		//	JOIN {$wpdb->prefix}sb_books_sermons ON sermons.id = {$wpdb->prefix}sb_books_sermons.sermon_id
+		//	JOIN {$wpdb->prefix}sb_books ON {$wpdb->prefix}sb_books_sermons.book_name = {$wpdb->prefix}sb_books.name
+		//	GROUP BY ss.id ORDER BY {$wpdb->prefix}sb_books.id");
 		$services = $wpdb->get_results("SELECT s.*, count(s.id) AS count FROM {$wpdb->prefix}sb_services AS s JOIN {$wpdb->prefix}sb_sermons AS sermons ON s.id = sermons.service_id GROUP BY s.id ORDER BY count DESC");
 		$book_count = $wpdb->get_results("SELECT bs.book_name AS name, count(distinct bs.sermon_id) AS count FROM {$wpdb->prefix}sb_books_sermons AS bs JOIN {$wpdb->prefix}sb_books AS b ON bs.book_name = b.name GROUP BY b.id");
 		$sb = array(
@@ -1074,7 +1074,7 @@ function sb_print_filters($filter) {
 					
 						<tr>
 							<td colspan="3">&nbsp;</td>
-							<td class="field"><input type="submit" class="filter" value="<?php _e('Show Sermons &raquo;', $sermon_domain) ?>">			</td>
+							<td class="field"><input type="submit" class="filter" style="background-color: #1F1F1F;color:white" value="<?php _e('Show Sermons &raquo;', $sermon_domain) ?>">			</td>
 						</tr>
 					</table>
 					<input type="hidden" name="page" value="1">
