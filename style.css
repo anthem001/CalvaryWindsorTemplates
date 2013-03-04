@@ -30,6 +30,7 @@ div.sermon-browser table.sermons {
 	font-weight:bold;
 	font-size: 140%;
 	padding-top: 0em;
+vertical-align:top;
 }
 
 div.sermon-browser table.sermons td.sermon-passage {
