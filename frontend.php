@@ -1063,6 +1063,7 @@ function sb_print_filters($filter) {
 									<?php endforeach ?>
 								</select>
 							</td>-->
+<tr>
 							<td class="fieldname rightcolumn"><?php _e('Direction', $sermon_domain) ?>: </td>
 							<td class="field"><select name="dir" id="dir">
 									<?php foreach ($di as $k => $v): ?>
@@ -1073,7 +1074,7 @@ function sb_print_filters($filter) {
 						</tr>
 					
 						<tr>
-							<td colspan="3">&nbsp;</td>
+						
 							<td class="field"><input type="submit" class="filter" style="background-color: #1F1F1F;color:white" value="<?php _e('Show Sermons &raquo;', $sermon_domain) ?>">			</td>
 						</tr>
 					</table>
@@ -1169,4 +1170,4 @@ function sb_display_mini_player ($sermon, $id=1, $flashvars="") {
 		echo " type=\"application/x-shockwave-flash\"/></span>";
 	}
 }
-?>
+?>P
