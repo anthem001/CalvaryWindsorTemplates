@@ -972,13 +972,13 @@ function sb_print_filters($filter) {
 	} elseif ($filter['filter'] == 'dropdown') {
 		// Drop-down filter
 		$preachers = $wpdb->get_results("SELECT p.*, count(p.id) AS count FROM {$wpdb->prefix}sb_preachers AS p JOIN {$wpdb->prefix}sb_sermons AS s ON p.id = s.preacher_id GROUP BY p.id ORDER BY count DESC, s.datetime DESC");
-		$series = $wpdb->get_results("SELECT ss.*, count(ss.id) AS count FROM {$wpdb->prefix}sb_series AS ss JOIN {$wpdb->prefix}sb_sermons AS sermons ON ss.id = sermons.series_id GROUP BY ss.id ORDER BY sermons.datetime DESC");
-		//$series = $wpdb->get_results("SELECT ss.*, count(ss.id) AS count 
-		//	FROM {$wpdb->prefix}sb_series AS ss 
-		//	JOIN {$wpdb->prefix}sb_sermons AS sermons ON ss.id = sermons.series_id 
-		//	JOIN {$wpdb->prefix}sb_books_sermons ON sermons.id = {$wpdb->prefix}sb_books_sermons.sermon_id
-		//	JOIN {$wpdb->prefix}sb_books ON {$wpdb->prefix}sb_books_sermons.book_name = {$wpdb->prefix}sb_books.name
-		//	GROUP BY ss.id ORDER BY {$wpdb->prefix}sb_books.id");
+		//$series = $wpdb->get_results("SELECT ss.*, count(ss.id) AS count FROM {$wpdb->prefix}sb_series AS ss JOIN {$wpdb->prefix}sb_sermons AS sermons ON ss.id = sermons.series_id GROUP BY ss.id ORDER BY sermons.datetime DESC");
+		$series = $wpdb->get_results("SELECT ss.* 
+			FROM {$wpdb->prefix}sb_series AS ss 
+			JOIN {$wpdb->prefix}sb_sermons AS sermons ON ss.id = sermons.series_id 
+			JOIN {$wpdb->prefix}sb_books_sermons ON sermons.id = {$wpdb->prefix}sb_books_sermons.sermon_id
+			JOIN {$wpdb->prefix}sb_books ON {$wpdb->prefix}sb_books_sermons.book_name = {$wpdb->prefix}sb_books.name
+			GROUP BY ss.id ORDER BY {$wpdb->prefix}sb_books.id ASC, sermons.series_id DESC");
 		$services = $wpdb->get_results("SELECT s.*, count(s.id) AS count FROM {$wpdb->prefix}sb_services AS s JOIN {$wpdb->prefix}sb_sermons AS sermons ON s.id = sermons.service_id GROUP BY s.id ORDER BY count DESC");
 		$book_count = $wpdb->get_results("SELECT bs.book_name AS name, count(distinct bs.sermon_id) AS count FROM {$wpdb->prefix}sb_books_sermons AS bs JOIN {$wpdb->prefix}sb_books AS b ON bs.book_name = b.name GROUP BY b.id");
 		$sb = array(
@@ -1008,11 +1008,11 @@ function sb_print_filters($filter) {
 									<?php endforeach ?>
 								</select>
 							</td>-->
-							<td class="fieldname rightcolumn"><?php _e('Series', $sermon_domain) ?></td>
+							<td class="fieldname rightcolumn"><?php _e('Series', $sermon_domain) ?>: </td>
 							<td class="field"><select name="series" id="series">
 									<option value="0" <?php echo (isset($_REQUEST['series']) && $_REQUEST['series'] != 0) ? '' : 'selected="selected"' ?>><?php _e('[All]', $sermon_domain) ?></option>
 									<?php foreach ($series as $item): ?>
-									<option value="<?php echo $item->id ?>" <?php echo isset($_REQUEST['series']) && $_REQUEST['series'] == $item->id ? 'selected="selected"' : '' ?>><?php echo stripslashes($item->name).' ('.$item->count.')' ?></option>
+									<option value="<?php echo $item->id ?>" <?php echo isset($_REQUEST['series']) && $_REQUEST['series'] == $item->id ? 'selected="selected"' : '' ?>><?php echo stripslashes($item->name).' '.$item->count.' ' ?></option>
 									<?php endforeach ?>
 								</select>
 							</td>
@@ -1039,7 +1039,7 @@ function sb_print_filters($filter) {
 							<td class="field"><select name="series" id="series">
 									<option value="0" <?php echo (isset($_REQUEST['series']) && $_REQUEST['series'] != 0) ? '' : 'selected="selected"' ?>><?php _e('[All]', $sermon_domain) ?></option>
 									<?php foreach ($series as $item): ?>
-									<option value="<?php echo $item->id ?>" <?php echo isset($_REQUEST['series']) && $_REQUEST['series'] == $item->id ? 'selected="selected"' : '' ?>><?php echo stripslashes($item->name).' ('.$item->count.')' ?></option>
+									<option value="<?php echo $item->id ?>" <?php echo isset($_REQUEST['series']) && $_REQUEST['series'] == $item->id ? 'selected="selected"' : '' ?>><?php echo stripslashes($item->name).' '.$item->count.' ' ?></option>
 									<?php endforeach ?>
 								</select>
 							</td>
@@ -1063,7 +1063,7 @@ function sb_print_filters($filter) {
 									<?php endforeach ?>
 								</select>
 							</td>-->
-							<td class="fieldname rightcolumn"><?php _e('Direction', $sermon_domain) ?></td>
+							<td class="fieldname rightcolumn"><?php _e('Direction', $sermon_domain) ?>: </td>
 							<td class="field"><select name="dir" id="dir">
 									<?php foreach ($di as $k => $v): ?>
 									<option value="<?php echo $v ?>" <?php echo $cd == $v ? 'selected="selected"' : '' ?>><?php _e($k, $sermon_domain) ?></option>
