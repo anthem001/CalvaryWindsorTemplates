@@ -1151,7 +1151,7 @@ function sb_get_flash_player_colour ($type) {
 	}
 }
 
-// Displays the mini flash mp3 player
+// Displays the mini flash mp3 playergit
 function sb_display_mini_player ($sermon, $id=1, $flashvars="") {
 	$filename = sb_first_mp3($sermon, FALSE);
 	if ($filename !="") {
@@ -1170,4 +1170,4 @@ function sb_display_mini_player ($sermon, $id=1, $flashvars="") {
 		echo " type=\"application/x-shockwave-flash\"/></span>";
 	}
 }
-?>P
+?>
