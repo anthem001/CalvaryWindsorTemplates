@@ -39,7 +39,7 @@ function sb_display_sermons($options = array()) {
 			if ($display_passage) {
 				$foo = unserialize($sermon->start);
 				$bar = unserialize($sermon->end);
-				echo "<span class=\"sermon-passage\"> (".sb_get_books($foo[0], $bar[0]).")</span>";
+				echo "<span class=\"sermon-passage\"> (".sb_get_books($foo[0], $bar[0], FALSE).")</span>";
 			}
 			if ($display_preacher) {
 				echo "<span class=\"sermon-preacher\">".__('by', $sermon_domain)." <a href=\"";
@@ -82,7 +82,7 @@ function sb_widget_sermon($args, $widget_args=1) {
 	foreach ((array) $sermons as $sermon){
 		$i++;
 		echo "<li><span class=\"sermon-title\">";
-		echo "<a href=".sb_build_url(array('sermon_id' => $sermon->id), true).">".stripslashes($sermon->title)."</a></span>";
+		echo '<a href="'.sb_build_url(array('sermon_id' => $sermon->id), true).'">'.stripslashes($sermon->title).'</a></span>';
 		if ($book) {
 			$foo = unserialize($sermon->start);
 			$bar = unserialize($sermon->end);
@@ -374,8 +374,8 @@ function sb_tidy_reference ($start, $end, $add_link = FALSE, $relative_link = TR
 	$start_verse = trim($start['verse']);
 	$end_verse = trim($end['verse']);
 	if ($add_link) {
-		$start_book = "<a href=\"".sb_get_book_link($start_book, $relative_link)."\">{$start_book}</a>";
-		$end_book = "<a href=\"".sb_get_book_link($end_book, $relative_link)."\">{$end_book}</a>";
+		$start_book = "<a href=\"".sb_get_book_link(trim($start['book']), $relative_link)."\">{$start_book}</a>";
+		$end_book = "<a href=\"".sb_get_book_link(trim($end['book']), $relative_link)."\">{$end_book}</a>";
 	}
 	if ($start_book == $end_book) {
 		if ($start_chapter == $end_chapter) {
@@ -621,12 +621,13 @@ function sb_print_tag_clouds($minfont=80, $maxfont=150) {
 		else
 			$cnt[$tag->name] = 1;
 	}
+	unset($cnt['']);
 	$fontrange = $maxfont - $minfont;
 	$maxcnt = 0;
 	$mincnt = 1000000;
 	foreach ($cnt as $cur) {
 		if ($cur > $maxcnt) $maxcnt = $cur;
-		if ($cur < $mincnt) $minct = $cur;
+		if ($cur < $mincnt) $mincnt = $cur;
 	}
 	$cntrange = $maxcnt + 1 - $mincnt;
 	$minlog = log($mincnt);
@@ -775,8 +776,17 @@ function sb_print_sameday_sermon_link($sermon) {
 function sb_get_single_sermon($id) {
 	global $wpdb;
 	$id = (int) $id;
-	$sermon = $wpdb->get_row("SELECT m.id, m.title, m.datetime, m.start, m.end, m.description, p.id as pid, p.name as preacher, p.image as image, p.description as preacher_description, s.id as sid, s.name as service, ss.id as ssid, ss.name as series FROM {$wpdb->prefix}sb_sermons as m, {$wpdb->prefix}sb_preachers as p, {$wpdb->prefix}sb_services as s, {$wpdb->prefix}sb_series as ss where m.preacher_id = p.id and m.service_id = s.id and m.series_id = ss.id and m.id = {$id}");
+	$sermon = $wpdb->get_row("SELECT m.id, m.title, m.datetime, m.start, m.end, m.description, p.id as pid, p.name as preacher, p.image as image, p.description as preacher_description, s.id as sid, s.name as service FROM {$wpdb->prefix}sb_sermons as m, {$wpdb->prefix}sb_preachers as p, {$wpdb->prefix}sb_services as s where m.preacher_id = p.id and m.service_id = s.id and m.id = {$id}");
+	$series = $wpdb->get_row("SELECT ss.id as ssid, ss.name as series FROM {$wpdb->prefix}sb_sermons as m, {$wpdb->prefix}sb_series as ss WHERE m.series_id = ss.id and m.id = {$id}");
 	if ($sermon) {
+		if ($series) {
+			$sermon->series = $series->series;
+			$sermon->ssid = $series->ssid;
+		}
+		else {
+			$sermon->series = '';
+			$sermon->ssid = 0;
+		}
 		$file = $code = $tags = array();
 		$stuff = $wpdb->get_results("SELECT f.id, f.type, f.name FROM {$wpdb->prefix}sb_stuff as f WHERE sermon_id = $id ORDER BY id desc");
 		$rawtags = $wpdb->get_results("SELECT t.name FROM {$wpdb->prefix}sb_sermons_tags as st LEFT JOIN {$wpdb->prefix}sb_tags as t ON st.tag_id = t.id WHERE st.sermon_id = {$sermon->id} ORDER BY t.name asc");
@@ -1015,7 +1025,7 @@ function sb_print_filters($filter) {
 			<form method="post" id="sermon-filter" action="<?php echo sb_display_url(); ?>">
 				<div style="clear:both">
 					<table class="sermonbrowser">
-						<tr>
+						<!--<tr>
 							<td class="fieldname"><?php _e('Preacher', $sermon_domain) ?></td>
 							<td class="field"><select name="preacher" id="preacher">
 									<option value="0" <?php echo (isset($_REQUEST['preacher']) && $_REQUEST['preacher'] != 0) ? '' : 'selected="selected"' ?>><?php _e('[All]', $sermon_domain) ?></option>
@@ -1032,16 +1042,16 @@ function sb_print_filters($filter) {
 									<?php endforeach ?>
 								</select>
 							</td>
-						</tr>
+						</tr>-->
 						<tr>
-							<td class="fieldname"><?php _e('Book', $sermon_domain) ?></td>
+							<!--<td class="fieldname"><?php _e('Book', $sermon_domain) ?></td>
 							<td class="field"><select name="book">
 									<option value=""><?php _e('[All]', $sermon_domain) ?></option>
 									<?php foreach ($book_count as $book): ?>
 									<option value="<?php echo $book->name ?>" <?php echo isset($_REQUEST['book']) && $_REQUEST['book'] == $book->name ? 'selected=selected' : '' ?>><?php echo $translated_books[stripslashes($book->name)]. ' ('.$book->count.')' ?></option>
 									<?php endforeach ?>
 								</select>
-							</td>
+							</td>-->
 							<td class="fieldname rightcolumn"><?php _e('Series', $sermon_domain) ?></td>
 							<td class="field"><select name="series" id="series">
 									<option value="0" <?php echo (isset($_REQUEST['series']) && $_REQUEST['series'] != 0) ? '' : 'selected="selected"' ?>><?php _e('[All]', $sermon_domain) ?></option>
@@ -1050,7 +1060,7 @@ function sb_print_filters($filter) {
 									<?php endforeach ?>
 								</select>
 							</td>
-						</tr>
+						<!--</tr>
 						<tr>
 							<td class="fieldname"><?php _e('Start date', $sermon_domain) ?></td>
 							<td class="field"><input type="text" name="date" id="date" value="<?php echo isset($_REQUEST['date']) ? mysql_real_escape_string($_REQUEST['date']) : '' ?>" /></td>
@@ -1068,7 +1078,7 @@ function sb_print_filters($filter) {
 									<option value="<?php echo $v ?>" <?php echo $csb == $v ? 'selected="selected"' : '' ?>><?php _e($k, $sermon_domain) ?></option>
 									<?php endforeach ?>
 								</select>
-							</td>
+							</td>-->
 							<td class="fieldname rightcolumn"><?php _e('Direction', $sermon_domain) ?></td>
 							<td class="field"><select name="dir" id="dir">
 									<?php foreach ($di as $k => $v): ?>
@@ -1078,8 +1088,8 @@ function sb_print_filters($filter) {
 							</td>
 						</tr>
 						<tr>
-							<td colspan="3">&nbsp;</td>
-							<td class="field"><input type="submit" class="filter" value="<?php _e('Filter &raquo;', $sermon_domain) ?>">			</td>
+
+							<td class="field" colspan='4'><input type="submit" class="filter" value="<?php _e('Show Sermons &raquo;', $sermon_domain) ?>">			</td>
 						</tr>
 					</table>
 					<input type="hidden" name="page" value="1">
@@ -1109,7 +1119,7 @@ function sb_first_mp3($sermon, $stats= TRUE) {
 	$stuff = array_merge((array)$stuff['Files'], (array)$stuff['URLs']);
 	foreach ((array) $stuff as $file) {
 		if (strtolower(substr($file, strrpos($file, '.') + 1)) == 'mp3') {
-			if ((substr($url,0,7) == "http://") or (substr($url,0,8) == 'https://')) {
+			if ((substr($file,0,7) == "http://") or (substr($file,0,8) == 'https://')) {
 				if ($stats)
 					$file=sb_display_url().sb_query_char().'show&amp;url='.rawurlencode($file);
 			} else {
